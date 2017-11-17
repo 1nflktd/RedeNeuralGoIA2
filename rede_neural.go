@@ -3,6 +3,7 @@ package main
 import (
 	"strings"
 	"strconv"
+	"math"
 )
 
 type RedeNeural struct {
@@ -30,9 +31,12 @@ func (r *RedeNeural) IniciarTeste(dadosTeste string) {
 					if err != nil {
 						r.CamadaEntrada.AdicionarNeuronio(i, v64)
 					}
-
 				}
-				// saida esperada valores[16]
+
+				v64, err := strconv.ParseFloat(valores[16], 64)
+				if err != nil {
+					r.CamadaSaida.SaidaEsperada = v64
+				}
 			}
 		}
 	}
@@ -44,7 +48,7 @@ func (r *RedeNeural) CalcularSomatorios() {
 		for iE, nE := range r.CamadaEntrada.Neuronios {
 			somatorio += r.CamadaEntrada.Peso.Obter(iE, iI) * nE.Saida
 		}
-		nI.Saida = somatorio
+		nI.Saida = r.FuncaoAtivacao(somatorio)
 	}
 
 	for iS, nS := range r.CamadaSaida.Neuronios {
@@ -52,6 +56,27 @@ func (r *RedeNeural) CalcularSomatorios() {
 		for iI, nI := range r.CamadaIntermediaria.Neuronios {
 			somatorio += r.CamadaIntermediaria.Peso.Obter(iI, iS) * nI.Saida
 		}
-		nS.Saida = somatorio
+		nS.Saida = r.FuncaoAtivacao(somatorio)
+	}
+}
+
+func (r *RedeNeural) FuncaoAtivacao(somatorio float64) float64 {
+	return 1/(1 + math.Exp(-somatorio))
+}
+
+// 0100000
+
+func (r *RedeNeural) CalcularErros() {
+	for _, nS := range r.CamadaSaida.Neuronios {
+		// verificar qual neuronio é e colocar 0 ou 1 dependendo
+		nS.Erro = nS.Saida * (1 - nS.Saida) * (nS.SaidaEsperada - nS.Saida)
+	}
+
+	for iI, nI := range r.CamadaIntermediaria.Neuronios {
+		fatorErro := 0.0
+		for iS, nS := range r.CamadaSaida.Neuronios {
+			//fatorErro = 
+		}
+		nI.Erro = nI.Saida * (1 - nI.Saida) * fatorErro
 	}
 }

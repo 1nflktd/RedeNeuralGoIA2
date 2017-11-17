@@ -8,7 +8,6 @@ import (
 type CamadaEntrada struct {
 	Neuronios [16]Neuronio
 	Peso Peso // Entrada -> Intermediaria
-	SaidaEsperada int
 	Seed *rand.Rand
 }
 

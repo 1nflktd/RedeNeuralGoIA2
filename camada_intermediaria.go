@@ -3,7 +3,8 @@ package main
 type CamadaIntermediaria struct {
 	Neuronios [13]Neuronio // transformar para variar
 	Peso Peso // Intermediaria -> Saida
-	Saida int
+	Saida float64
+	Erro float64
 }
 
 func (c *CamadaIntermediaria) Init() {

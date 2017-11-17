@@ -11,10 +11,6 @@ type Neuronio struct{
 	Entrada float64
 }
 
-type CamadaSaida struct {
-	Neuronios [10]Neuronio
-}
-
 func main() {
 	// ler o arquivo de teste
 	dadosTeste := `
