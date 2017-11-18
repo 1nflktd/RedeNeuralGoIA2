@@ -34,7 +34,6 @@ func (r *RedeNeural) Treinar(arqTeste string) int {
 	for scanner.Scan() {
 		l := scanner.Text()
 		if l != "" {
-			//fmt.Printf("%i: %s\n", i, l)
 			valores := strings.Split(l, ",")
 			if len(valores) == 17 {
 				for i := 0; i < 16; i++ {
@@ -47,9 +46,10 @@ func (r *RedeNeural) Treinar(arqTeste string) int {
 				r.CalcularSomatorios()
 				r.CalcularErros()
 				r.AjustarPesos()
+
+				nLinha++
 			}
 		}
-		nLinha++
 	}
 
 	if err := scanner.Err(); err != nil {
