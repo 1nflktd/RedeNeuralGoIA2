@@ -6,11 +6,6 @@ import (
 
 const TaxaAprendizagem = 0.5
 
-type Neuronio struct{
-	Saida float64
-	Entrada float64
-}
-
 func main() {
 	// ler o arquivo de teste
 	dadosTeste := `
