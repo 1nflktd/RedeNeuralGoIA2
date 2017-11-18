@@ -4,6 +4,7 @@ import (
 	"strings"
 	"strconv"
 	"math"
+//	"log"
 )
 
 type RedeNeural struct {
@@ -16,10 +17,10 @@ func (r *RedeNeural) Init(dadosTeste string) {
 	r.CamadaEntrada.Init()
 	r.CamadaIntermediaria.Init()
 	//r.CamadaSaida.Init()
-	r.IniciarTeste(dadosTeste)
+	r.Treinar(dadosTeste)
 }
 
-func (r *RedeNeural) IniciarTeste(dadosTeste string) {
+func (r *RedeNeural) Treinar(dadosTeste string) {
 	linhas := strings.Split(dadosTeste, "\n")
 	for _, l := range linhas {
 		if l != "" {
@@ -28,41 +29,48 @@ func (r *RedeNeural) IniciarTeste(dadosTeste string) {
 			if len(valores) == 17 {
 				for i := 0; i < 16; i++ {
 					v64, err := strconv.ParseFloat(valores[i], 64)
-					if err != nil {
+					if err == nil {
 						r.CamadaEntrada.AdicionarNeuronio(i, v64)
 					}
 				}
 				r.CamadaSaida.SetSaidaEsperada(valores[16])
+				r.CalcularSomatorios()
+				r.CalcularErros()
+				r.AjustarPesos()
 			}
 		}
 	}
 }
 
 func (r *RedeNeural) CalcularSomatorios() {
-	for iI, nI := range r.CamadaIntermediaria.Neuronios {
+	for iI, _ := range r.CamadaIntermediaria.Neuronios {
 		somatorio := 0.0
 		for iE, nE := range r.CamadaEntrada.Neuronios {
 			somatorio += r.CamadaEntrada.Peso.Obter(iE, iI) * nE.Saida
 		}
-		nI.Saida = r.FuncaoAtivacao(somatorio)
+		r.CamadaIntermediaria.SetSaidaNeuronio(iI, r.FuncaoAtivacao(somatorio))
 	}
 
-	for iS, nS := range r.CamadaSaida.Neuronios {
+	for iS, _ := range r.CamadaSaida.Neuronios {
 		somatorio := 0.0
 		for iI, nI := range r.CamadaIntermediaria.Neuronios {
 			somatorio += r.CamadaIntermediaria.Peso.Obter(iI, iS) * nI.Saida
 		}
-		nS.Saida = r.FuncaoAtivacao(somatorio)
+		r.CamadaSaida.SetSaidaNeuronio(iS, r.FuncaoAtivacao(somatorio))
 	}
 }
 
 func (r *RedeNeural) FuncaoAtivacao(somatorio float64) float64 {
+	if somatorio < 0 {
+		return 1 - 1/(1 + math.Exp(somatorio))
+	}
 	return 1/(1 + math.Exp(-somatorio))
 }
 
 func (r *RedeNeural) CalcularErros() {
-	for nI, nS := range r.CamadaSaida.Neuronios {
-		nS.Erro = nS.Saida * (1 - nS.Saida) * (r.CamadaSaida.GetSaidaEsperadaNeuronio(nI) - nS.Saida)
+	for iS, nS := range r.CamadaSaida.Neuronios {
+		erro := nS.Saida * (1 - nS.Saida) * (r.CamadaSaida.GetSaidaEsperadaNeuronio(iS) - nS.Saida)
+		r.CamadaSaida.SetErroNeuronio(iS, erro)
 	}
 
 	for iI, nI := range r.CamadaIntermediaria.Neuronios {
@@ -70,7 +78,8 @@ func (r *RedeNeural) CalcularErros() {
 		for iS, nS := range r.CamadaSaida.Neuronios {
 			fatorErro += nS.Erro * r.CamadaIntermediaria.Peso.Obter(iI, iS)
 		}
-		nI.Erro = nI.Saida * (1 - nI.Saida) * fatorErro
+		erro := nI.Saida * (1 - nI.Saida) * fatorErro
+		r.CamadaIntermediaria.SetErroNeuronio(iI, erro)
 	}
 }
 
