@@ -4,7 +4,9 @@ import (
 	"strings"
 	"strconv"
 	"math"
-//	"log"
+	"bufio"
+	"os"
+	"log"
 )
 
 type RedeNeural struct {
@@ -13,16 +15,24 @@ type RedeNeural struct {
 	CamadaSaida CamadaSaida
 }
 
-func (r *RedeNeural) Init(dadosTeste string) {
+func (r *RedeNeural) Init() {
 	r.CamadaEntrada.Init()
 	r.CamadaIntermediaria.Init()
 	//r.CamadaSaida.Init()
-	r.Treinar(dadosTeste)
 }
 
-func (r *RedeNeural) Treinar(dadosTeste string) {
-	linhas := strings.Split(dadosTeste, "\n")
-	for _, l := range linhas {
+func (r *RedeNeural) Treinar(arqTeste string) int {
+	file, errFile := os.Open(arqTeste)
+	if errFile != nil {
+		log.Fatal(errFile)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+
+	nLinha := 0
+	for scanner.Scan() {
+		l := scanner.Text()
 		if l != "" {
 			//fmt.Printf("%i: %s\n", i, l)
 			valores := strings.Split(l, ",")
@@ -39,7 +49,14 @@ func (r *RedeNeural) Treinar(dadosTeste string) {
 				r.AjustarPesos()
 			}
 		}
+		nLinha++
 	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	return nLinha
 }
 
 func (r *RedeNeural) CalcularSomatorios() {
