@@ -2,19 +2,26 @@ package main
 
 import (
 	"log"
+	"flag"
 )
 
-const TaxaAprendizagem = 0.3
-
 func main() {
+	taxaAprendizagem := flag.Float64("taxaAprendizagem", 0.5, "Taxa de aprendizagem. Default: 0.5")
+	iteracoesTreinamento := flag.Int("iteracoesTreinamento", 1000, "Iteracoes de treinamento. Default: 1000")
+	nroNeuroniosIntermediarios := flag.Int("nroNeuroniosIntermediarios", 10, "Iteracoes de treinamento. Default: 10")
+	arqTreino := flag.String("arqTreino", "pendigits.tes", "Iteracoes de treinamento. Default: pendigits.tes")
+	arqTeste := flag.String("arqTeste", "pendigits.tra", "Iteracoes de treinamento. Default: pendigits.tra")
+
+	flag.Parse()
+
 	// ler o arquivo de teste
 	redeNeural := RedeNeural{}
-	redeNeural.Init()
+	redeNeural.Init(*taxaAprendizagem, *nroNeuroniosIntermediarios)
 
 	log.Printf("Iniciou treinamento...\n")
 
-	for i := 0; i < 1000; i++ {
-		_ = redeNeural.Treinar("pendigits.tes")
+	for i := 0; i < *iteracoesTreinamento; i++ {
+		_ = redeNeural.Treinar(*arqTreino)
 		//log.Printf("Treinamento %d. Leu %d linhas\n", i, nLinhas)
 	}
 
@@ -22,7 +29,7 @@ func main() {
 
 	log.Printf("Iniciou teste...\n")
 
-	redeNeural.Testar("pendigits.tra")
+	redeNeural.Testar(*arqTeste)
 
 	log.Printf("Terminou teste.\n")
 }

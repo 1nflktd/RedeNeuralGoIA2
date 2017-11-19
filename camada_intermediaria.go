@@ -6,16 +6,19 @@ import (
 )
 
 type CamadaIntermediaria struct {
-	Neuronios [13]Neuronio // transformar para variar
+	Neuronios []Neuronio
 	Peso Peso // Intermediaria -> Saida
 	Saida float64
 	Erro float64
 }
 
-func (c *CamadaIntermediaria) Init() {
-	c.Peso.Init(13, 10)
+func (c *CamadaIntermediaria) Init(nroNeuroniosIntermediarios int) {
+	c.Peso.Init(nroNeuroniosIntermediarios, 10)
+
+	c.Neuronios = make([]Neuronio, nroNeuroniosIntermediarios)
+
 	seed := rand.New(rand.NewSource(time.Now().UnixNano()))
-	for i := 0; i < 13; i++ {
+	for i := 0; i < nroNeuroniosIntermediarios; i++ {
 		for j := 0; j < 10; j++ {
 			c.Peso.Adicionar(i, j, seed.Float64())
 		}

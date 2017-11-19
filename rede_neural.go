@@ -13,11 +13,13 @@ type RedeNeural struct {
 	CamadaEntrada CamadaEntrada
 	CamadaIntermediaria CamadaIntermediaria
 	CamadaSaida CamadaSaida
+	TaxaAprendizagem float64
 }
 
-func (r *RedeNeural) Init() {
-	r.CamadaEntrada.Init()
-	r.CamadaIntermediaria.Init()
+func (r *RedeNeural) Init(taxaAprendizagem float64, nroNeuroniosIntermediarios int) {
+	r.CamadaEntrada.Init(nroNeuroniosIntermediarios)
+	r.CamadaIntermediaria.Init(nroNeuroniosIntermediarios)
+	r.TaxaAprendizagem = taxaAprendizagem
 }
 
 func (r *RedeNeural) Treinar(arq string) int {
@@ -159,14 +161,14 @@ func (r *RedeNeural) CalcularErros() {
 func (r *RedeNeural) AjustarPesos() {
 	for iE, nE := range r.CamadaEntrada.Neuronios {
 		for iI, nI := range r.CamadaIntermediaria.Neuronios {
-			novoPeso := r.CamadaEntrada.Peso.Obter(iE, iI) + TaxaAprendizagem * nE.Saida * nI.Erro
+			novoPeso := r.CamadaEntrada.Peso.Obter(iE, iI) + r.TaxaAprendizagem * nE.Saida * nI.Erro
 			r.CamadaEntrada.Peso.Adicionar(iE, iI, novoPeso)
 		}
 	}
 
 	for iI, nI := range r.CamadaIntermediaria.Neuronios {
 		for iS, nS := range r.CamadaSaida.Neuronios {
-			novoPeso := r.CamadaIntermediaria.Peso.Obter(iI, iS) + TaxaAprendizagem * nI.Saida * nS.Erro
+			novoPeso := r.CamadaIntermediaria.Peso.Obter(iI, iS) + r.TaxaAprendizagem * nI.Saida * nS.Erro
 			r.CamadaIntermediaria.Peso.Adicionar(iI, iS, novoPeso)
 		}
 	}
