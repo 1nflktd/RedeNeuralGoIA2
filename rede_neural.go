@@ -122,7 +122,7 @@ func (r *RedeNeural) CalcularSomatorios() {
 	for iI, _ := range r.CamadaIntermediaria.Neuronios {
 		somatorio := 0.0
 		for iE, nE := range r.CamadaEntrada.Neuronios {
-			somatorio += r.CamadaEntrada.Peso.Obter(iE, iI) * nE.GetSaida()
+			somatorio += r.CamadaEntrada.Peso.Obter(iE, iI) * nE.Saida
 		}
 		r.CamadaIntermediaria.SetSaidaNeuronio(iI, r.FuncaoAtivacao(somatorio))
 	}
@@ -130,7 +130,7 @@ func (r *RedeNeural) CalcularSomatorios() {
 	for iS, _ := range r.CamadaSaida.Neuronios {
 		somatorio := 0.0
 		for iI, nI := range r.CamadaIntermediaria.Neuronios {
-			somatorio += r.CamadaIntermediaria.Peso.Obter(iI, iS) * nI.GetSaida()
+			somatorio += r.CamadaIntermediaria.Peso.Obter(iI, iS) * nI.Saida
 		}
 		r.CamadaSaida.SetSaidaNeuronio(iS, r.FuncaoAtivacao(somatorio))
 	}
@@ -142,16 +142,16 @@ func (r *RedeNeural) FuncaoAtivacao(somatorio float64) float64 {
 
 func (r *RedeNeural) CalcularErros() {
 	for iS, nS := range r.CamadaSaida.Neuronios {
-		erro := nS.GetSaida() * (1 - nS.GetSaida()) * (r.CamadaSaida.GetSaidaEsperadaNeuronio(iS) - nS.GetSaida())
+		erro := nS.Saida * (1 - nS.Saida) * (r.CamadaSaida.GetSaidaEsperadaNeuronio(iS) - nS.Saida)
 		r.CamadaSaida.SetErroNeuronio(iS, erro)
 	}
 
 	for iI, nI := range r.CamadaIntermediaria.Neuronios {
 		fatorErro := 0.0
 		for iS, nS := range r.CamadaSaida.Neuronios {
-			fatorErro += nS.GetErro() * r.CamadaIntermediaria.Peso.Obter(iI, iS)
+			fatorErro += nS.Erro * r.CamadaIntermediaria.Peso.Obter(iI, iS)
 		}
-		erro := nI.GetSaida() * (1 - nI.GetSaida()) * fatorErro
+		erro := nI.Saida * (1 - nI.Saida) * fatorErro
 		r.CamadaIntermediaria.SetErroNeuronio(iI, erro)
 	}
 }
@@ -159,14 +159,14 @@ func (r *RedeNeural) CalcularErros() {
 func (r *RedeNeural) AjustarPesos() {
 	for iE, nE := range r.CamadaEntrada.Neuronios {
 		for iI, nI := range r.CamadaIntermediaria.Neuronios {
-			novoPeso := r.CamadaEntrada.Peso.Obter(iE, iI) + TaxaAprendizagem * nE.GetSaida() * nI.GetErro()
+			novoPeso := r.CamadaEntrada.Peso.Obter(iE, iI) + TaxaAprendizagem * nE.Saida * nI.Erro
 			r.CamadaEntrada.Peso.Adicionar(iE, iI, novoPeso)
 		}
 	}
 
 	for iI, nI := range r.CamadaIntermediaria.Neuronios {
 		for iS, nS := range r.CamadaSaida.Neuronios {
-			novoPeso := r.CamadaIntermediaria.Peso.Obter(iI, iS) + TaxaAprendizagem * nI.GetSaida() * nS.GetErro()
+			novoPeso := r.CamadaIntermediaria.Peso.Obter(iI, iS) + TaxaAprendizagem * nI.Saida * nS.Erro
 			r.CamadaIntermediaria.Peso.Adicionar(iI, iS, novoPeso)
 		}
 	}

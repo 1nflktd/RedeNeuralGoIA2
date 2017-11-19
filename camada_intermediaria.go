@@ -23,9 +23,9 @@ func (c *CamadaIntermediaria) Init() {
 }
 
 func (c *CamadaIntermediaria) SetSaidaNeuronio(i int, s float64) {
-	c.Neuronios[i].SetSaida(s)
+	c.Neuronios[i].Saida = s
 }
 
 func (c *CamadaIntermediaria) SetErroNeuronio(i int, s float64) {
-	c.Neuronios[i].SetErro(s)
+	c.Neuronios[i].Erro = s
 }

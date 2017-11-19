@@ -33,16 +33,16 @@ func (c *CamadaSaida) GetSaidaEsperadaNeuronio(i int) float64 {
 
 func (c *CamadaSaida) GetSaidaNeuronio(i int) float64 {
 	if (i >= 0 && i <= 9) {
-		return c.Neuronios[i].GetSaida()
+		return c.Neuronios[i].Saida
 	}
 	// else error
 	return 0.0
 }
 
 func (c *CamadaSaida) SetSaidaNeuronio(i int, s float64) {
-	c.Neuronios[i].SetSaida(s)
+	c.Neuronios[i].Saida = s
 }
 
 func (c *CamadaSaida) SetErroNeuronio(i int, s float64) {
-	c.Neuronios[i].SetErro(s)
+	c.Neuronios[i].Erro = s
 }
