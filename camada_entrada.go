@@ -5,6 +5,9 @@ import (
 	"time"
 )
 
+const LimiteInferior = 0
+const LimiteSuperior = 100
+
 type CamadaEntrada struct {
 	Neuronios [16]Neuronio
 	Peso Peso // Entrada -> Intermediaria
@@ -17,7 +20,10 @@ func (c *CamadaEntrada) Init() {
 }
 
 func (c *CamadaEntrada) AdicionarNeuronio(index int, valor float64) {
-	c.Neuronios[index] = Neuronio{ Entrada: valor, Saida: valor }
+	// normalizar
+	vNormalizado := (valor - LimiteInferior) / (LimiteSuperior - LimiteInferior)
+
+	c.Neuronios[index] = Neuronio{ Entrada: vNormalizado, Saida: vNormalizado }
 
 	if !(c.Peso.Obter(index, 0) > 0) {
 		// inicializar peso

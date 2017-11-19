@@ -85,8 +85,6 @@ func (r *RedeNeural) Testar(arq string) {
 				r.CamadaSaida.SetSaidaEsperada(valores[16])
 				r.CalcularSomatorios()
 
-				//log.Printf("%+v\n\n\n", r.CamadaSaida)
-
 				// verificar neuronios ativados se batem com a entrada
 				acertou := true
 				for i := 0; i < 10; i++ {
@@ -112,7 +110,8 @@ func (r *RedeNeural) Testar(arq string) {
 		}
 	}
 
-	log.Printf("Total: %d, Acertos: %d, Erros: %d, %% Acertos: %f\n", total, acertos, (total - acertos), ((acertos * 100)/total))
+	percentualAcertos := (float64(acertos) * 100.0) / float64(total)
+	log.Printf("Total: %d, Acertos: %d, Erros: %d, %% Acertos: %f\n", total, acertos, (total - acertos), percentualAcertos)
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
@@ -138,11 +137,6 @@ func (r *RedeNeural) CalcularSomatorios() {
 }
 
 func (r *RedeNeural) FuncaoAtivacao(somatorio float64) float64 {
-	/*
-	if somatorio < 0 {
-		return 1 - 1/(1 + math.Exp(somatorio))
-	}
-	*/
 	return 1/(1 + math.Exp(-somatorio))
 }
 
