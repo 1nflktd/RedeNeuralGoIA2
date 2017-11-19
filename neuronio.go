@@ -13,3 +13,11 @@ func (n *Neuronio) SetSaida(s float64) {
 func (n *Neuronio) SetErro(s float64) {
 	n.Erro = s
 }
+
+func (n *Neuronio) GetSaida() float64 {
+	return n.Saida
+}
+
+func (n *Neuronio) GetErro() float64 {
+	return n.Erro
+}
