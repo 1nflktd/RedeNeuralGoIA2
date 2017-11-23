@@ -7,6 +7,7 @@ import (
 	"bufio"
 	"os"
 	"log"
+	"fmt"
 )
 
 type RedeNeural struct {
@@ -71,6 +72,7 @@ func (r *RedeNeural) Testar(arq string) {
 
 	acertos := 0
 	total := 0
+	matrizConfusao := [10][10]int{}
 	for scanner.Scan() {
 		l := scanner.Text()
 		if l != "" {
@@ -88,32 +90,36 @@ func (r *RedeNeural) Testar(arq string) {
 				r.CalcularSomatorios()
 
 				// verificar neuronios ativados se batem com a entrada
-				acertou := true
+				saidaNeuronio := [10]float64{}
+				max := 0.0
+				neuronioAtivado := 0
 				for i := 0; i < 10; i++ {
-					saidaEsperada := r.CamadaSaida.GetSaidaEsperadaNeuronio(i)
-					saida := r.CamadaSaida.GetSaidaNeuronio(i)
-
-					if saida < 0.5 {
-						saida = 0
-					} else {
-						saida = 1
-					}
-
-					if saidaEsperada != saida {
-						acertou = false
-						break
+					saidaNeuronio[i] = r.CamadaSaida.GetSaidaNeuronio(i)
+					if saidaNeuronio[i] > max {
+						max = saidaNeuronio[i]
+						neuronioAtivado = i
 					}
 				}
 
-				if acertou {
+				saidaNumericaEsperada := r.ObterSaidaNumerica(r.CamadaSaida.SaidaEsperada)
+				if saidaNumericaEsperada == neuronioAtivado {
 					acertos++
 				}
+
+				matrizConfusao[saidaNumericaEsperada][neuronioAtivado]++
 			}
 		}
 	}
 
 	percentualAcertos := (float64(acertos) * 100.0) / float64(total)
 	log.Printf("Total: %d, Acertos: %d, Erros: %d, %% Acertos: %f\n", total, acertos, (total - acertos), percentualAcertos)
+	log.Printf("Matriz confusao\n")
+	for i := 0; i < 10; i++ {
+		for j := 0; j < 10; j++ {
+			fmt.Printf("%d\t", matrizConfusao[i][j])
+		}
+		fmt.Printf("\n")
+	}
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
@@ -172,4 +178,13 @@ func (r *RedeNeural) AjustarPesos() {
 			r.CamadaIntermediaria.Peso.Adicionar(iI, iS, novoPeso)
 		}
 	}
+}
+
+func (r *RedeNeural) ObterSaidaNumerica(saida [10]float64) int {
+	for i := 0; i < 10; i++ {
+		if saida[i] == 1 {
+			return i
+		}
+	}
+	return 0
 }
