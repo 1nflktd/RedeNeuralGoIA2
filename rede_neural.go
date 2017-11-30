@@ -121,9 +121,47 @@ func (r *RedeNeural) Testar(arq string) {
 		fmt.Printf("\n")
 	}
 
+	r.CalcularEstatisticas(matrizConfusao)
+
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func (r *RedeNeural) CalcularEstatisticas(matrizConfusao [10][10]int) {
+	// vp = 0,0 1,1 2,2
+	// vn = E diagonal - vp
+	// fp = E coluna  - vp
+	// fn = E linha - vp
+
+	diagonal := 0
+	coluna := [10]int{}
+	linha := [10]int{}
+	for i := 0; i < 10; i++ {
+		for j := 0; j < 10; j++ {
+
+			if j == i {
+				diagonal += matrizConfusao[i][j]
+			}
+
+			coluna[j] += matrizConfusao[i][j]
+			linha[i] += matrizConfusao[i][j]
+		}
+	}
+
+	for i := 0; i < 10; i++ {
+		vp := float64(matrizConfusao[i][i])
+		vn := float64(diagonal) - vp
+		fp := float64(coluna[i]) - vp
+		fn := float64(linha[i]) - vp
+
+		precisao := vp / (vp + fp)
+		sensitividade := vp / (vp + fn)
+		especificidade := vn / (vn + fp)
+		fmt.Printf("classe %d\n", i)
+		fmt.Printf("precisao: %f sensitividade: %f especificidade: %f\n", precisao, sensitividade, especificidade)
+	}
+
 }
 
 func (r *RedeNeural) CalcularSomatorios() {
