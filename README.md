@@ -4,11 +4,11 @@ Windows:
 
 	Para rodar basta clicar no arquivo RedeNeuralGoIA2.exe. O programa executará com as seguintes configurações padrões:
   
-      - taxaAprendizagem = 0.5
-	    - iteracoesTreinamento = 1000
-	    - nroNeuroniosIntermediarios = 10
-	    - arqTreino = "pendigits.tes"
-	    - arqTeste = "pendigits.tra"
+	- taxaAprendizagem = 0.5
+	- iteracoesTreinamento = 1000
+	- nroNeuroniosIntermediarios = 10
+	- arqTreino = "pendigits.tes"
+	- arqTeste = "pendigits.tra"
 
 	Para mudá-las, basta entrar pelo console (cmd) e rodar o executável com as opções, ex:
 
