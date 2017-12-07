@@ -17,4 +17,4 @@ Windows:
     Para compilar, é necessário instalar o Go (https://golang.org/doc/install?download=go1.9.windows-amd64.msi).
 	Depois, rodar (na pasta onde se encontra os arquivos):
 
-		C:\go\src\PredadorPresaIA\go build
+		C:\go\src\RedeNeuralGoIA2\go build
