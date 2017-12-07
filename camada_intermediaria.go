@@ -8,8 +8,6 @@ import (
 type CamadaIntermediaria struct {
 	Neuronios []Neuronio
 	Peso Peso // Intermediaria -> Saida
-	Saida float64
-	Erro float64
 }
 
 func (c *CamadaIntermediaria) Init(nroNeuroniosIntermediarios int) {
